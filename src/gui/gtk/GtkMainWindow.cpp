@@ -7,8 +7,6 @@
 #include <gtkmm/stock.h>
 #include <glibmm.h>
 #include <giomm.h>
-#include <fstream>
-#include <streambuf>
 
 GtkMainWindow::GtkMainWindow() :
 	m_core(Application::getSingleton()->getCore())
@@ -46,7 +44,7 @@ GtkMainWindow::GtkMainWindow() :
 
 	// Let's add some DnD goodness
 
-	std::vector<Gtk::TargetEntry> listTargets;
+	vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back(Gtk::TargetEntry("STRING"));
 	listTargets.push_back(Gtk::TargetEntry("text/plain"));
 	//listTargets.push_back(Gtk::TargetEntry("application/x-bittorrent"));
@@ -60,19 +58,19 @@ GtkMainWindow::GtkMainWindow() :
 	this->show_all();
 }
 
-static inline std::string &rtrim(std::string &s)
+static inline string &rtrim(string &s)
 {
-	s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+	s.erase(find_if(s.rbegin(), s.rend(), not1(ptr_fun<int, int>(isspace))).base(), s.end());
 	return s;
 }
 
 void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
 {
-	std::string str = selection_data.get_data_as_string();
-	std::string str2 = Glib::filename_from_uri(str);
-	std::string str3 = rtrim(str2);
+	string str = selection_data.get_data_as_string();
+	string str2 = Glib::filename_from_uri(str);
+	string str3 = rtrim(str2);
 	bool want_uncertain = true;
-	std::string content_type = Gio::content_type_guess(str3, selection_data.get_data_as_string(), want_uncertain);
+	string content_type = Gio::content_type_guess(str3, selection_data.get_data_as_string(), want_uncertain);
 	if(content_type == "application/x-bittorrent") {
 		shared_ptr<Torrent> t = m_core->addTorrent(str3);
 		m_treeview->addCell(t);
