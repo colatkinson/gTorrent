@@ -6,6 +6,9 @@
 #include <gtkmm/hvseparator.h>
 #include <gtkmm/stock.h>
 #include <glibmm.h>
+#include <giomm.h>
+#include <fstream>
+#include <streambuf>
 
 GtkMainWindow::GtkMainWindow() :
 	m_core(Application::getSingleton()->getCore())
@@ -41,10 +44,39 @@ GtkMainWindow::GtkMainWindow() :
 	m_treeview = Gtk::manage(new GtkTorrentTreeView());
 	this->add(*m_treeview);
 
+	// Let's add some DnD goodness
+
+	std::vector<Gtk::TargetEntry> listTargets;
+	listTargets.push_back(Gtk::TargetEntry("STRING"));
+	listTargets.push_back(Gtk::TargetEntry("text/plain"));
+	//listTargets.push_back(Gtk::TargetEntry("application/x-bittorrent"));
+
+	m_treeview->drag_dest_set(listTargets);
+	m_treeview->signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkMainWindow::onFileDropped));
+
 	Glib::signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 10);
 	this->signal_delete_event().connect(sigc::mem_fun(*this, &GtkMainWindow::onDestroy));
 
 	this->show_all();
+}
+
+static inline std::string &rtrim(std::string &s)
+{
+	s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+	return s;
+}
+
+void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time)
+{
+	std::string str = selection_data.get_data_as_string();
+	std::string str2 = Glib::filename_from_uri(str);
+	std::string str3 = rtrim(str2);
+	bool want_uncertain = true;
+	std::string content_type = Gio::content_type_guess(str3, selection_data.get_data_as_string(), want_uncertain);
+	if(content_type == "application/x-bittorrent") {
+		shared_ptr<Torrent> t = m_core->addTorrent(str3);
+		m_treeview->addCell(t);
+	}
 }
 
 bool GtkMainWindow::onSecTick()
