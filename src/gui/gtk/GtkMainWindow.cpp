@@ -47,7 +47,7 @@ GtkMainWindow::GtkMainWindow() :
 	vector<Gtk::TargetEntry> listTargets;
 	listTargets.push_back(Gtk::TargetEntry("STRING"));
 	listTargets.push_back(Gtk::TargetEntry("text/plain"));
-	//listTargets.push_back(Gtk::TargetEntry("application/x-bittorrent"));
+	listTargets.push_back(Gtk::TargetEntry("text/uri-list"));
 
 	m_treeview->drag_dest_set(listTargets);
 	m_treeview->signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkMainWindow::onFileDropped));
