@@ -48,8 +48,9 @@ GtkMainWindow::GtkMainWindow() :
 	listTargets.push_back(Gtk::TargetEntry("STRING"));
 	listTargets.push_back(Gtk::TargetEntry("text/plain"));
 	listTargets.push_back(Gtk::TargetEntry("text/uri-list"));
+	listTargets.push_back(Gtk::TargetEntry("application/x-bittorrent"));
 
-	m_treeview->drag_dest_set(listTargets);
+	m_treeview->drag_dest_set(listTargets, Gtk::DEST_DEFAULT_MOTION | Gtk::DEST_DEFAULT_DROP, Gdk::ACTION_COPY | Gdk::ACTION_MOVE | Gdk::ACTION_LINK | Gdk::ACTION_PRIVATE);
 	m_treeview->signal_drag_data_received().connect(sigc::mem_fun(*this, &GtkMainWindow::onFileDropped));
 
 	Glib::signal_timeout().connect(sigc::mem_fun(*this, &GtkMainWindow::onSecTick), 10);
