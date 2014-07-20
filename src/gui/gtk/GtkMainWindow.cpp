@@ -106,7 +106,8 @@ void GtkMainWindow::onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context,
 	string str3 = rtrim(str2);
 	bool want_uncertain = true;
 	string content_type = Gio::content_type_guess(str3, selection_data.get_data_as_string(), want_uncertain);
-	if(content_type == "application/x-bittorrent") {
+	if(content_type == "application/x-bittorrent")
+	{
 		shared_ptr<Torrent> t = m_core->addTorrent(str3);
 		m_treeview->addCell(t);
 	}
