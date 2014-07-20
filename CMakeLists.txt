@@ -10,7 +10,7 @@ PROJECT (gtorrent)
 
 SET (GTORRENT_VERSION_MAJOR 0)                                                                                                                                                                                                                 
 SET (GTORRENT_VERSION_MINOR 0)
-SET (GTORRENT_VERSION_PATCH 1)
+SET (GTORRENT_VERSION_PATCH 2)
 
 ############################################################
 
@@ -18,7 +18,8 @@ SET (GTORRENT_VERSION_PATCH 1)
 SET (VERSION ${GTORRENT_VERSION_MAJOR}.${GTORRENT_VERSION_MINOR}.${GTORRENT_VERSION_PATCH})
 configure_file(src/utils/Version.hpp.in Version.hpp @ONLY)
 
-IF (WIN32)
+OPTION(WIN_DEBUG "Disable -mwindows for debugging purposes" OFF)
+IF (WIN32 AND (NOT WIN_DEBUG))
     SET (WIN32_CXXFLAGS "-mwindows" ) #Prevents process from automatically spawning a console window.
 ELSE ()
     SET (WIN32_CXXFLAGS "")

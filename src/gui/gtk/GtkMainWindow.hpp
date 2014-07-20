@@ -2,7 +2,9 @@
 
 #include "GtkTorrentTreeView.hpp"
 #include <gtkmm/headerbar.h>
+#include <gtkmm/statusbar.h>
 #include <gtkmm/window.h>
+#include <gtkmm/button.h>
 #include <core/Core.hpp>
 #include <gtkmm/main.h>
 
@@ -13,11 +15,17 @@ private:
 
 	Gtk::HeaderBar *header;
 	GtkTorrentTreeView *m_treeview;
+	// Gtk::Statusbar *status;
 
 	// Signal Responders
-	
+
+	void onAboutBtnClicked();
 	void onAddBtnClicked();
 	void onAddMagnetBtnClicked();
+	void onPauseBtnClicked();
+	void onResumeBtnClicked();
+	void onRemoveBtnClicked();
+	void onPropertiesBtnClicked();
 
 public:
 	GtkMainWindow();
@@ -26,4 +34,3 @@ public:
 	bool onSecTick();
 	void onFileDropped(const Glib::RefPtr<Gdk::DragContext>& context, int x, int y, const Gtk::SelectionData& selection_data, guint info, guint time);
 };
-
